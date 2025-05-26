@@ -2,6 +2,7 @@ package com.sarahcode.contacts.api.controllers;
 
 import com.sarahcode.contacts.api.controllers.dto.CategoryResponse;
 import com.sarahcode.contacts.api.controllers.dto.NewCategoryRequest;
+import com.sarahcode.contacts.api.mappers.CategoryMapper;
 import com.sarahcode.contacts.api.services.CategoryService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -23,7 +24,7 @@ public class CategoryController {
     public ResponseEntity<List<CategoryResponse>> getCategories() {
         var categories = service.findAll()
                 .stream()
-                .map(CategoryResponse::new)
+                .map(CategoryMapper::toResponse)
                 .toList();
 
         return ResponseEntity.ok(categories);

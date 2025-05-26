@@ -22,14 +22,14 @@ public class CategoryService {
     }
 
     public CategoryResponse save(NewCategoryRequest request) {
-        var newCategory = CategoryMapper.toEntity(request.name());
-        var savedCategory = repository.save(newCategory);
-        return new CategoryResponse(savedCategory.getId(), savedCategory.getName());
+        var savedCategory = repository.save(CategoryMapper.toEntity(request.name()));
+
+        return CategoryMapper.toResponse(savedCategory);
     }
 
     public CategoryResponse findById(Long id) {
         var category = repository.findById(id).orElseThrow(() -> new CategoryNotFoundException("Category not founded"));
 
-        return new CategoryResponse(category.getId(), category.getName());
+        return CategoryMapper.toResponse(category);
     }
 }
