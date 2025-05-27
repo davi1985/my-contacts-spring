@@ -5,11 +5,11 @@ import com.sarahcode.contacts.api.entities.Category;
 
 public class CategoryMapper {
 
-    public static Category toEntity(String name) {
+    public Category toEntity(String name) {
         return new Category(name);
     }
 
-    public static CategoryResponse toResponse(Category category) {
+    public CategoryResponse toResponse(Category category) {
         return new CategoryResponse(category.getId(), category.getName());
     }
 }

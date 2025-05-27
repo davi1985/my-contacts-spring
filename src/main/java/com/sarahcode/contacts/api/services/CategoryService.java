@@ -16,20 +16,21 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository repository;
+    private final CategoryMapper mapper;
 
     public List<Category> findAll() {
         return repository.findAll();
     }
 
     public CategoryResponse save(NewCategoryRequest request) {
-        var savedCategory = repository.save(CategoryMapper.toEntity(request.name()));
+        var savedCategory = repository.save(mapper.toEntity(request.name()));
 
-        return CategoryMapper.toResponse(savedCategory);
+        return mapper.toResponse(savedCategory);
     }
 
     public CategoryResponse findById(Long id) {
         var category = repository.findById(id).orElseThrow(() -> new CategoryNotFoundException("Category not founded"));
 
-        return CategoryMapper.toResponse(category);
+        return mapper.toResponse(category);
     }
 }

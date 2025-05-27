@@ -19,12 +19,13 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService service;
+    private final CategoryMapper mapper;
 
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> getCategories() {
         var categories = service.findAll()
                 .stream()
-                .map(CategoryMapper::toResponse)
+                .map(mapper::toResponse)
                 .toList();
 
         return ResponseEntity.ok(categories);
