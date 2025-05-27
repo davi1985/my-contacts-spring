@@ -48,14 +48,12 @@ public class CategoryServiceTest {
         var categoryResponse = new CategoryResponse(categoryId, "Telegram");
 
         Mockito.when(repository.findById(categoryId)).thenReturn(Optional.of(category));
-        Mockito.when(mapper.toResponse(category)).thenReturn(categoryResponse);
 
         var result = service.findById(categoryId);
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals("Telegram", categoryResponse.name());
         Mockito.verify(repository).findById(categoryId);
-        Mockito.verify(mapper).toResponse(category);
     }
 
     @Test

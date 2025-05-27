@@ -1,0 +1,115 @@
+package com.sarahcode.contacts.api.controller;
+
+import com.sarahcode.contacts.api.controllers.CategoryController;
+import com.sarahcode.contacts.api.controllers.dto.CategoryResponse;
+import com.sarahcode.contacts.api.controllers.dto.NewCategoryRequest;
+import com.sarahcode.contacts.api.entities.Category;
+import com.sarahcode.contacts.api.exceptions.CategoryNotFoundException;
+import com.sarahcode.contacts.api.mappers.CategoryMapper;
+import com.sarahcode.contacts.api.services.CategoryService;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(CategoryController.class)
+public class CategoryControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private CategoryService service;
+
+    @MockitoBean
+    private CategoryMapper mapper;
+
+    @Test
+    public void getCategories_shouldReturnListOfCategories() throws Exception {
+        var category1 = new Category(1L, "Instagram");
+        var category2 = new Category(2L, "Facebook");
+
+        Mockito.when(service.findAll()).thenReturn(List.of(category1, category2));
+        Mockito.when(mapper.toResponse(category1))
+            .thenReturn(new CategoryResponse(1L, "Instagram"));
+        Mockito.when(mapper.toResponse(category2))
+            .thenReturn(new CategoryResponse(2L, "Facebook"));
+
+        String expectedJson = Files.readString(Path.of("src/test/resources/response/categories.json"));
+
+        mockMvc.perform(get("/api/v1/categories")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().json(expectedJson));
+
+        Mockito.verify(service).findAll();
+        Mockito.verify(mapper).toResponse(category1);
+        Mockito.verify(mapper).toResponse(category2);
+    }
+
+    @Test
+    public void getCategoryById_shouldReturnCategory_whenCategoryExists() throws Exception {
+        var categoryId = 1L;
+        var category = new Category(categoryId, "Instagram");
+        var response = new CategoryResponse(categoryId, "Instagram");
+
+        Mockito.when(service.findById(categoryId)).thenReturn(category);
+        Mockito.when(mapper.toResponse(category)).thenReturn(response);
+
+        String expectedJson = Files.readString(Path.of("src/test/resources/response/category.json"));
+
+        mockMvc.perform(get("/api/v1/categories/" + categoryId)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().json(expectedJson));
+
+        Mockito.verify(service).findById(categoryId);
+        Mockito.verify(mapper).toResponse(category);
+    }
+
+    @Test
+    public void getCategoryById_shouldReturn404_whenCategoryNotExists() throws Exception {
+        var invalidCategoryId = 3L;
+
+        Mockito.when(service.findById(invalidCategoryId)).thenThrow(new CategoryNotFoundException("Category not found"));
+
+        String expectedJson = Files.readString(Path.of("src/test/resources/response/category-not-found.json"));
+
+        mockMvc.perform(get("/api/v1/categories/" + invalidCategoryId)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound())
+            .andExpect(content().json(expectedJson));
+
+        Mockito.verify(service).findById(invalidCategoryId);
+    }
+
+    @Test
+    public void saveCategory_shouldCreateNewCategory() throws Exception {
+        var requestJson = Files.readString(Path.of("src/test/resources/request/category.json"));
+        var expectedJson = Files.readString(Path.of("src/test/resources/response/category.json"));
+
+        var savedResponse = new CategoryResponse(1L, "Instagram");
+
+        Mockito.when(service.save(Mockito.any(NewCategoryRequest.class))).thenReturn(savedResponse);
+
+        mockMvc.perform(post("/api/v1/categories")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andExpect(status().isCreated())
+            .andExpect(header().string("Location", "http://localhost/api/v1/categories/1"))
+            .andExpect(content().json(expectedJson));
+
+        Mockito.verify(service).save(Mockito.any(NewCategoryRequest.class));
+    }
+}

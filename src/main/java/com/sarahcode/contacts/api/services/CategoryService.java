@@ -28,9 +28,7 @@ public class CategoryService {
         return mapper.toResponse(savedCategory);
     }
 
-    public CategoryResponse findById(Long id) {
-        var category = repository.findById(id).orElseThrow(() -> new CategoryNotFoundException("Category not founded"));
-
-        return mapper.toResponse(category);
+    public Category findById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new CategoryNotFoundException("Category not founded"));
     }
 }
