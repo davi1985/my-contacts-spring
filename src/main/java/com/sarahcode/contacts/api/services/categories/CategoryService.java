@@ -1,7 +1,7 @@
-package com.sarahcode.contacts.api.services;
+package com.sarahcode.contacts.api.services.categories;
 
-import com.sarahcode.contacts.api.controllers.dto.CategoryResponse;
-import com.sarahcode.contacts.api.controllers.dto.NewCategoryRequest;
+import com.sarahcode.contacts.api.controllers.categories.dto.CategoryResponse;
+import com.sarahcode.contacts.api.controllers.categories.dto.NewCategoryRequest;
 import com.sarahcode.contacts.api.entities.Category;
 import com.sarahcode.contacts.api.exceptions.CategoryNotFoundException;
 import com.sarahcode.contacts.api.mappers.CategoryMapper;

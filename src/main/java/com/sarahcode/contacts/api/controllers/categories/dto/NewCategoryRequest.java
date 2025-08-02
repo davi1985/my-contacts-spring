@@ -1,4 +1,4 @@
-package com.sarahcode.contacts.api.controllers.dto;
+package com.sarahcode.contacts.api.controllers.categories.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 

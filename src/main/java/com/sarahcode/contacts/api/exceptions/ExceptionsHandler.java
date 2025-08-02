@@ -17,12 +17,19 @@ public class ExceptionsHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    @ExceptionHandler(ContactNotFoundException.class)
+    public ResponseEntity<?> contactNotFound(ContactNotFoundException exception) {
+        Map<String, String> error = Map.of("message", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, Object>> handleValidationErrors(
+            MethodArgumentNotValidException ex) {
         var errors = ex.getBindingResult().getFieldErrors()
-            .stream()
-            .map(error -> Map.of(error.getField(), error.getDefaultMessage()))
-            .toList();
+                .stream()
+                .map(error -> Map.of(error.getField(), error.getDefaultMessage()))
+                .toList();
 
         return ResponseEntity.badRequest().body(Map.of("errors", errors));
     }

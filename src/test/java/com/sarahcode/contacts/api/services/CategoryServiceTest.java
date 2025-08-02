@@ -1,11 +1,13 @@
 package com.sarahcode.contacts.api.services;
 
-import com.sarahcode.contacts.api.controllers.dto.CategoryResponse;
-import com.sarahcode.contacts.api.controllers.dto.NewCategoryRequest;
+import com.sarahcode.contacts.api.controllers.categories.dto.CategoryResponse;
+import com.sarahcode.contacts.api.controllers.categories.dto.NewCategoryRequest;
 import com.sarahcode.contacts.api.entities.Category;
 import com.sarahcode.contacts.api.exceptions.CategoryNotFoundException;
 import com.sarahcode.contacts.api.mappers.CategoryMapper;
 import com.sarahcode.contacts.api.repositories.CategoryRepository;
+import com.sarahcode.contacts.api.services.categories.CategoryService;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,9 +1,10 @@
-package com.sarahcode.contacts.api.controllers;
+package com.sarahcode.contacts.api.controllers.categories;
 
-import com.sarahcode.contacts.api.controllers.dto.CategoryResponse;
-import com.sarahcode.contacts.api.controllers.dto.NewCategoryRequest;
+import com.sarahcode.contacts.api.controllers.categories.dto.CategoryResponse;
+import com.sarahcode.contacts.api.controllers.categories.dto.NewCategoryRequest;
 import com.sarahcode.contacts.api.mappers.CategoryMapper;
-import com.sarahcode.contacts.api.services.CategoryService;
+import com.sarahcode.contacts.api.services.categories.CategoryService;
+
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,9 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> getCategories() {
         var categories = service.findAll()
-            .stream()
-            .map(mapper::toResponse)
-            .toList();
+                .stream()
+                .map(mapper::toResponse)
+                .toList();
 
         return ResponseEntity.ok(categories);
     }
@@ -34,11 +35,12 @@ public class CategoryController {
     @PostMapping
     @Transactional
     public ResponseEntity<CategoryResponse> saveCategory(
-        @RequestBody @Valid final NewCategoryRequest request, final UriComponentsBuilder uri) {
+            @RequestBody @Valid final NewCategoryRequest request,
+            final UriComponentsBuilder uri) {
         var response = service.save(request);
         var location = uri.path("/api/v1/categories/{id}")
-            .buildAndExpand(response.id())
-            .toUri();
+                .buildAndExpand(response.id())
+                .toUri();
 
         return ResponseEntity.created(location).body(response);
     }

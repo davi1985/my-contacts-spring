@@ -1,13 +1,14 @@
 package com.sarahcode.contacts.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sarahcode.contacts.api.controllers.CategoryController;
-import com.sarahcode.contacts.api.controllers.dto.CategoryResponse;
-import com.sarahcode.contacts.api.controllers.dto.NewCategoryRequest;
+import com.sarahcode.contacts.api.controllers.categories.CategoryController;
+import com.sarahcode.contacts.api.controllers.categories.dto.CategoryResponse;
+import com.sarahcode.contacts.api.controllers.categories.dto.NewCategoryRequest;
 import com.sarahcode.contacts.api.entities.Category;
 import com.sarahcode.contacts.api.exceptions.CategoryNotFoundException;
 import com.sarahcode.contacts.api.mappers.CategoryMapper;
-import com.sarahcode.contacts.api.services.CategoryService;
+import com.sarahcode.contacts.api.services.categories.CategoryService;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,16 +48,16 @@ public class CategoryControllerTest {
 
         Mockito.when(service.findAll()).thenReturn(List.of(category1, category2));
         Mockito.when(mapper.toResponse(category1))
-            .thenReturn(new CategoryResponse(1L, "Instagram"));
+                .thenReturn(new CategoryResponse(1L, "Instagram"));
         Mockito.when(mapper.toResponse(category2))
-            .thenReturn(new CategoryResponse(2L, "Facebook"));
+                .thenReturn(new CategoryResponse(2L, "Facebook"));
 
         var expectedJson = readJson("/response/categories.json");
 
         mockMvc.perform(get("/api/v1/categories")
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json(expectedJson));
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson));
 
         Mockito.verify(service).findAll();
         Mockito.verify(mapper).toResponse(category1);
@@ -76,8 +77,8 @@ public class CategoryControllerTest {
 
         mockMvc.perform(get("/api/v1/categories/" + categoryId)
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json(expectedJson));
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson));
 
         Mockito.verify(service).findById(categoryId);
         Mockito.verify(mapper).toResponse(category);
@@ -87,14 +88,15 @@ public class CategoryControllerTest {
     public void getCategoryById_shouldReturn404_whenCategoryNotExists() throws Exception {
         var invalidCategoryId = 3L;
 
-        Mockito.when(service.findById(invalidCategoryId)).thenThrow(new CategoryNotFoundException("Category not found"));
+        Mockito.when(service.findById(invalidCategoryId))
+                .thenThrow(new CategoryNotFoundException("Category not found"));
 
         var expectedJson = readJson("/response/category-not-found.json");
 
         mockMvc.perform(get("/api/v1/categories/" + invalidCategoryId)
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound())
-            .andExpect(content().json(expectedJson));
+                .andExpect(status().isNotFound())
+                .andExpect(content().json(expectedJson));
 
         Mockito.verify(service).findById(invalidCategoryId);
     }
@@ -111,9 +113,9 @@ public class CategoryControllerTest {
         mockMvc.perform(post("/api/v1/categories")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
-            .andExpect(status().isCreated())
-            .andExpect(header().string("Location", "http://localhost/api/v1/categories/1"))
-            .andExpect(content().json(expectedJson));
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "http://localhost/api/v1/categories/1"))
+                .andExpect(content().json(expectedJson));
 
         Mockito.verify(service).save(Mockito.any(NewCategoryRequest.class));
     }
@@ -127,8 +129,8 @@ public class CategoryControllerTest {
         mockMvc.perform(post("/api/v1/categories")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().json(expectedJson));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json(expectedJson));
     }
 
     private String readJson(String relativePath) throws IOException {

@@ -2,7 +2,7 @@ package com.sarahcode.contacts.api.mappers;
 
 import org.springframework.stereotype.Component;
 
-import com.sarahcode.contacts.api.controllers.dto.CategoryResponse;
+import com.sarahcode.contacts.api.controllers.categories.dto.CategoryResponse;
 import com.sarahcode.contacts.api.entities.Category;
 
 @Component
